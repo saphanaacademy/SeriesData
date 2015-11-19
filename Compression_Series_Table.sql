@@ -1,21 +1,23 @@
 -- create schema for testing series data
 CREATE SCHEMA SERIES_DATA;
 
--- creating a regular table
+-- create a regular table
 CREATE COLUMN TABLE SERIES_DATA.MACHINE_READINGS_REGULAR_TABLE (
 	SENSOR VARCHAR(15), 
 	TIMER TIMESTAMP, 
 	READING DECIMAL(10,2)
 );
  
--- inserting manufactured data into the new table
+-- insert manufactured data into the new table
 INSERT INTO SERIES_DATA.MACHINE_READINGS_REGULAR_TABLE (
 	SELECT 
 		'MACHINE_1', 
 		GENERATED_PERIOD_START, 
 		ROUND(20+RAND()*20,1) 
 	FROM 
-		SERIES_GENERATE_TIMESTAMP('INTERVAL 1 MINUTE', '2015-01-01 00:00', '2015-11-01 23:59')
+		SERIES_GENERATE_TIMESTAMP('INTERVAL 1 MINUTE', '2015-01-01 00:00', '2015-11-01 
+
+23:59')
 );
 MERGE DELTA OF SERIES_DATA.MACHINE_READINGS_REGULAR_TABLE;
 
@@ -31,7 +33,7 @@ SELECT
 FROM M_CS_TABLES
 WHERE SCHEMA_NAME = 'SERIES_DATA';
 
--- creating a series table
+-- create a series table
 CREATE COLUMN TABLE SERIES_DATA.MACHINE_READINGS_SERIES_TABLE (
 	SENSOR VARCHAR(15), 
 	TIMER TIMESTAMP, 
@@ -45,11 +47,10 @@ SERIES (
 	MAXVALUE '2015-12-31 23:59'
  );
  
- -- inserting the same data from our regular table into the new series table
+ -- insert the same data from our regular table into the new series table
 INSERT INTO SERIES_DATA.MACHINE_READINGS_SERIES_TABLE (
 	SELECT *
 	FROM SERIES_DATA.MACHINE_READINGS_REGULAR_TABLE
-	ORDER BY TIMER ASC
 );
 MERGE DELTA OF SERIES_DATA.MACHINE_READINGS_SERIES_TABLE;
 
